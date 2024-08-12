@@ -1,14 +1,10 @@
-import puppeteer from "puppeteer-extra";
-import Adblocker from 'puppeteer-extra-plugin-adblocker'
+import puppeteer from "puppeteer";
 import { launchPage } from "./launcher";
 import { searchEvent, getEventsLinks, findGoodVideo } from "./searcher";
 
-const eventToSearch = "Philadelphia Union - Cruz Azul"; // Event to search. CHANGE THIS VALUE TO SEARCH FOR A DIFFERENT EVENT
-const minimumVideoQuality = 360; // Minimum video quality to watch the event. CHANGE THIS VALUE TO WATCH THE EVENT IN A DIFFERENT QUALITY
+const eventToSearch = "Paris 2024"; // Event to search. CHANGE THIS VALUE TO SEARCH FOR A DIFFERENT EVENT
+const minimumVideoQuality = 720; // Minimum video quality to watch the event. CHANGE THIS VALUE TO WATCH THE EVENT IN A DIFFERENT QUALITY
 
-
-
-puppeteer.use(Adblocker({ blockTrackers: true, blockTrackersAndAnnoyances: true, useCache: true}))
 
 const main = async () => {
     try {
@@ -21,11 +17,13 @@ const main = async () => {
         else {
             await searchEvent(page, eventToSearch);
             const eventsLinks = await getEventsLinks(page);
-            const video = await findGoodVideo(browser, eventsLinks);
+            const video = await findGoodVideo(browser, eventsLinks, minimumVideoQuality);
             if (video) {
                 console.log("Video found");
                 // We play the video
                 await video.evaluate((video) => video.play());
+                // We unsilence the video
+                await video.evaluate((video) => video.muted = false);
                 // We put the video in full screen
                 await video.evaluate((video) => video.requestFullscreen());
             } else {

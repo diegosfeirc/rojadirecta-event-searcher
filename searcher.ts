@@ -1,6 +1,6 @@
 /// <reference lib="dom" />
 import { Page, ElementHandle, Browser } from "puppeteer";
-import { getVideo } from "./player";
+import { getVideo } from "./videoGetter";
 
 
 export const searchEvent = async (page: Page, event_search: string): Promise<void> => {
@@ -37,9 +37,9 @@ export const getEventsLinks = async (page: Page): Promise<ElementHandle<Node>[]>
     }
 };
 
-export const findGoodVideo = async (browser: Browser, eventsLinks: ElementHandle<Node>[]): Promise<ElementHandle<HTMLVideoElement> | null> => {
+export const findGoodVideo = async (browser: Browser, eventsLinks: ElementHandle<Node>[], minimumVideoQuality: number): Promise<ElementHandle<HTMLVideoElement> | null> => {
     try {
-        for (let eventIndex = 0; eventIndex < eventsLinks.length; eventIndex++) {
+        for (let eventIndex = 1; eventIndex < eventsLinks.length; eventIndex++) {
             await (eventsLinks[eventIndex] as ElementHandle).click();
             await waitFor(2);
             const pages = await browser.pages();
@@ -53,7 +53,15 @@ export const findGoodVideo = async (browser: Browser, eventsLinks: ElementHandle
             const iframes = await currentPage.$$('iframe');
             const video = await getVideo(currentPage, iframes);
             if (video) {
-                return video;
+                if (await video.evaluate((video) => video.videoHeight) >= minimumVideoQuality) {
+                    console.log("Video quality is good enough");
+                    return video;
+                }
+                else {
+                    console.log("Video quality is not good enough");
+                    // We close the page
+                    await currentPage.close();
+                }
             }
         }
         return null;
