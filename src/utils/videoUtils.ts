@@ -14,8 +14,8 @@ export const findVideoWithQuality = async (browser: Browser, eventLinks: Element
 
             const pages = await browser.pages();
             const currentPage = pages[pages.length - 1];
-            // Wait for 5 seconds to allow the page to load.
-            await new Promise(resolve => setTimeout(resolve, 5000));
+            // Wait for the page to load completely
+            await currentPage.waitForNavigation({ waitUntil: "networkidle0" });
 
             const video = await findVideoInPage(currentPage, minimumQuality);
             if (video) return video;
@@ -36,7 +36,7 @@ export const findVideoWithQuality = async (browser: Browser, eventLinks: Element
  */
 const findVideoInPage = async (page: Page, minimumQuality: number): Promise<ElementHandle<HTMLVideoElement> | null> => {
     try {
-        const videoElements = await page.$x("//video");
+        const videoElements = await page.$$("xpath/.//video");
         for (const videoElement of videoElements) {
             const quality = await videoElement.evaluate((video) => (video as HTMLVideoElement).videoHeight);
             if (quality >= minimumQuality) {

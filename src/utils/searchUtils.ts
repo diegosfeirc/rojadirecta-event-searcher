@@ -8,13 +8,13 @@ import { Page, ElementHandle } from "puppeteer";
  */
 export const searchEventOnPage = async (page: Page, eventName: string): Promise<void> => {
     try {
-        const searchInput = await page.$x("//input[@id='searchInput']");
+        const searchInput = await page.$$("xpath/.//input[@id='searchInput']");
         if (searchInput.length === 0) {
             throw new Error("Search input not found.");
         }
         await searchInput[0].type(eventName);
 
-        const events = await page.$x("//span[@itemtype='http://schema.org/SportsEvent']");
+        const events = await page.$$("xpath/.//span[@itemtype='http://schema.org/SportsEvent']");
         if (events.length === 0) {
             console.warn("No events found.");
         } else {
@@ -32,7 +32,7 @@ export const searchEventOnPage = async (page: Page, eventName: string): Promise<
  */
 export const getEventLinks = async (page: Page): Promise<ElementHandle[]> => {
     try {
-        return await page.$x("//a[@rel='nofollow']//span[text()='Ver']") as ElementHandle<Element>[];
+        return await page.$$("xpath/.//a[@rel='nofollow']//span[text()='Ver']") as ElementHandle<Element>[];
     } catch (error) {
         console.error("Error fetching event links:", error);
         return [];

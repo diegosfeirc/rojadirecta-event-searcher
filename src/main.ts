@@ -3,7 +3,7 @@ import { initializeBrowser } from "./utils/browserUtils";
 import { searchAndFindVideo } from "./services/eventService";
 
 const config = {
-    eventToSearch: "Real Madrid",
+    eventToSearch: "Albany - Syracuse",
     minimumVideoQuality: 720,
     headless: false,
 };
