@@ -1,0 +1,19 @@
+{
+  "name": "rojadirecta-event-searcher",
+  "version": "1.0.0",
+  "description": "A scraper to quickly and efficiently search for sports event streams on Rojadirecta, using filters for video quality, playback, and language, avoiding annoying ads.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "puppeteer": "^23.10.3"
+  },
+  "devDependencies": {
+    "@types/puppeteer": "^7.0.4",
+    "typescript": "^5.7.2"
+  }
+}
